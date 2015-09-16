@@ -162,7 +162,151 @@ have the software to work with git, we're going to dive in head first! It's
 time to make your (probably) first ever repository. Once we've done that, we're
 going to put it up on Github for you to look at online!
 
-*Tasks*
+We're going to do this starting locally, working with some common and useful
+git commands to do so, and then create an online home for your repository to
+send it to. Finally, we're going to send it 'upstream' (to a non-local
+repository) to Github so you can look at in all its glory.
+
+#### Step 1: Initialize your repository
+
+In the terminal, navigate to where you want to store the directory that will
+house your repository.
+
+Once in that directory create a new directory (probably with `mkdir`) called
+`first-git-repo`. Enter the new directory.
+
+Run the command `git init`. It will initialize your repository by creating a
+new directory named `.git` which you can view with `ls -la` in Bash. There's no
+data or files that git is tracking yet though (or any at all really), so onto
+Step 2!
+
+#### Step 1.5: Set the settings!
+
+New Git repositories have a few settings you need to tell it about explicitly
+unless you've already done so for Git globally. We're going to set them up
+globally for your computer. Just run these commands, trust me.
+
+- `git config --global user.email "<your Github email>"`
+- `git config --global user.name "<your name>"`
+- `git config --global push.default simple`
+
+#### Step 2: Make a file for Git to Track
+
+Create a new file in the directory called `README.md`. Add some text to the
+file such as "This is my first repository! Yay me!", then save it.
+
+This file will eventually be used as the introductory blurb for your
+repository (Github automatically uses `README.md` if it's in the top
+directory). If you're familiar with Markdown files, it supports all standard
+Markdown syntax as well as some Git specific additions. Having one is a good
+standard for you Git repos.
+
+#### Step 3: Get Git to track the file
+
+If you use `git status` you'll notice that the file you added isn't yet tracked
+by Git. We're going to change that.
+
+If you enter `git add README.md` (auto-complete might help you there) git will
+add the file you just made to the Staging Area. This means that the next commit
+you make with include the file's changes in the snapshot.
+
+Try entering `git status` again to see the difference. It's a really helpful
+command to use before you commit to make sure you're committing all the right
+things.
+
+#### Step 4: Commit your new file
+
+Time to save changes. Run `git commit -m "Initial commit"`. The `-m` option
+just specifies the commit message to use on the command line instead of it
+opening the default editor and you **really** don't want that. It can be
+changed though, don't worry, but we cover that in the Intermediate section. For
+this tutorial just use the `-m` option when you commit.
+
+Remember, **all commits have to have messages** and those messages are **very
+helpful**.
+
+Now let's look at our commit! Run `git log`. You should see an output that has
+a big hash value (that's the commit's hash), your name and email address, and
+time, and the message you wrote. When you make more commits this will turn into
+a scrollable list. You'll love `git log` when you're working on a repo with
+hundreds or thousands of commits you didn't make!
+
+#### Step 5: Add some good Git default files
+
+Almost all git repos should have a `.gitignore` file and a `.gitattributes`
+file, so we're going to make them (even though they won't do much).
+
+Create an empty file called `.gitignore` in the directory, then use `git add
+.gitignore` to add it to the staging area.
+
+Create a file called `.gitattributes` in the directory and add the line "\*
+text=auto" to it. Save it, and use `git add .gitattributes` to add it to the
+staging area as well.
+
+Additionally, if you wanted, you could add a `LICENSE` file to the repo. This
+isn't really important here, but for code projects could be incredibly
+important. We're going to skip it, but Github has some really good information
+on it if you're curious.
+
+Use `git status` to make sure both the files we made are in the Staging Area
+and then use `git commit -m "Added git config files"` to save those changes
+too.
+
+If you're curious, check out `git log` again to see how it changes.
+
+#### Step 6: Make an online home
+
+Go back to Github in your web browser and navigate to your profile (clicking
+your icon in the top right should do it). Click the "Repositories" tab.
+
+On the right side there should be a button that says "New". Click that one too!
+
+In the repository name section type in `first-git-repo` or whatever you called
+that directory your repo is in on your computer. It doesn't *have* to be the
+same but it really helps to keep things organized.
+
+Enter a description if you like, make sure the "Public" radio button is
+selected, and make sure that you don't change the options below. You'll note
+that the things we've already made, Github can do for you. In the future it's
+usually quite handy but that wouldn't be any fun here at all.
+
+Once you've verified the settings as above, click "Create Repository". It'll
+have a bunch of instructions (it always does this) for reference. Just ignore
+them because we're doing those things right now!
+
+What you *should* do is copy the HTTPS link at the top (it's easier than SSH).
+
+#### Step 7: Add the online repository as a Remote
+
+In Git, a remote is a reference to an upstream repository. We want to add the
+online repository we just created as a remote.
+
+Run `git remote add origin <the link you copied>`. What this does is tells Git
+to add the link you copied as a remote to its storage and call it "origin" for
+future reference. You could call it other stuff, but "origin" is pretty
+standard for the main online home of your repos.
+
+#### Step 8: Copy your repo upstream!
+
+Now that you have the online remote, time to use it! Run the command `git push
+-u origin master`. It will ask you for your Github username and password and
+that's important, so that no one can make changes from your computer without
+your credentials. Enter them and it should complete no problem.
+
+What the command did was take all of the commits you have in your repo that the
+online one doesn't have (all of them) and sends them to it. The `-u` option
+tells git that you want your current repository branch to be linked to the one
+on the "origin" remote called "master" (the branch you're currently on is called
+"master" as well. It's another default thing). You only need to use the `-u`
+option once for a remote/branch combination, so in future pushes you can just
+run `git push` and it should work automatically.
+
+#### Step 9: Go and look at your handy-work!
+
+Go back to your browser (you might have to refresh the repository page), and
+look at all the files you made! They're the same (and that's the point)!
+
+Good job!
 
 ### Further reading.
 
@@ -175,7 +319,7 @@ can either get going right away on next section of this workshop or you can do
 some reading and playing!
 
 I recommend at least browsing, but probably just full on reading these
-resources:
+resources (not in any particular order):
 
 - [Pro Git](https://git-scm.com/book/en/v2), a book by Scott Chacon and Ben
   Straub, published by Apress. It's available for free at this link online and
@@ -183,6 +327,9 @@ resources:
 - [Atlassian Git Tutorials](https://www.atlassian.com/git/), a collection of
   really useful tips, techniques, etc. for using Git to your full advantage.
 - [Git Branching Game](http://pcottle.github.io/learnGitBranching/)
+
+I've gone through all of the above resources and attribute much of my skill
+with Git to them; the rest to practice.
 
 Additionally, if you ever need to know what a git command does but don't
 remember the exact options, in your terminal `man git-<name-of-command>`. If
