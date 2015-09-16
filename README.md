@@ -338,4 +338,280 @@ commands and are super useful.
 
 ## Intermediate Start Here
 
-//TODO
+So you're ready to Git gud? Awesome. This section of the workshop/tutorial
+assumes you've used Git before, used it for more than the one project above,
+and that you've probably messed up a project or two with it before as well.
+
+Fret not! We're here to give you new and powerful tools and knowledge to extend
+your skills to a level you feel proud of.
+
+Additionally, this section will be a lot more conceptual than the n00b section;
+fair warning.
+
+On to the fun part.
+
+### 1. Sweet git commands and command options
+
+These are the useful ones for every day. We'll get to the big scary ones later.
+
+#### `git log`
+
+"Ooooohhh how boring," you say sarcastically. Not even, mate. You want to check
+my git log? It brings all the boys to the yard.
+
+Seriously though: `git log --graph --oneline --decorate` is amazing to look at
+and perfect for almost everything. Try it in a repo with [seriously whack
+history](https://github.com/CarletonComputerScienceSociety/ccss-docs) in
+comparison with your regular old `git log`; and yes I can post that because
+most of it was my <strike>lazy</strike> fault when deadlines were too tight.
+Now it's too late and a great example.
+
+If you want that to be even better I've got 2 words for you: "Git" "Aliases".
+They're a thing, if you didn't know. For that one above as an example, open up
+the file `~/.gitconfig` and add:
+
+```
+[alias]
+  <alias-name> = log --graph --oneline --decorate
+```
+
+Then anywhere you can use git you can use `git <alias-name>` and it does that
+pretty business.
+
+Also, use the `--all` option to view literally all of the history (not just
+stuff on the branch you're on right now) and --stat to list file changes (not a
+diff, just the +/-).
+
+Lastly, you can use `git log` similarly to `git diff` if you want to track the
+changes in a file or tree over time. `git log --follow -p -- <file/tree-ish>`.
+
+#### Change that damn editor
+
+Have you ever used the default commit editor with git? Have you been using `-m`
+ever since? Fear no more, there is a moderate solution.
+
+One line commit messages are frequently not enough so `-m` is out of the
+question. Thankfully you can take your favorite *ever* text editor and make it
+the one Git outsources to. I use vim, personally. To change Git's default to
+your favorite (even gedit, Lord forbid) open `~/.gitconfig` again and add the
+section:
+
+```
+[core]
+  editor = <command>
+```
+
+Where `<command>` is the terminal command you would use to open that text
+editor.
+
+You're welcome.
+
+#### Checkout options
+
+Arguably (by me) one of the most useful commands ever, it has lots of cool
+options.
+
+Using `git branch <new branch>`, `git checkout <new branch>`? Don't. Use `git
+checkout -b <new branch>`, it's both in one!
+
+`git checkout <branch> -- <file/pathspec>` grabs the version of a file from a
+different branch right into your working directory. You can the work with it,
+see if it behaves right, reset it, commit it there, whatever you want. It's
+just handy sometimes.
+
+#### Stashing
+
+Awesome feature not many people use. `git stash` removes but saves all your
+working branch changes so you can pull that change you forgot about when you're
+working on a branch you **shouldn't have been working on**.
+
+`git stash list` shows you all the saved stashes, `git stash apply` puts them
+back for you (with an optional selection on which one. Default is most recent),
+and `git stash drop` deletes all those saved stashes.
+
+#### Fetch and why it's good
+
+Again, people are working on branches they probably shouldn't have. Using `git
+fetch` lets you get the changes from your remotes without putting them places
+that are going to break things right way (like `git pull` would).
+
+Still messed up, but at least you've got some breathing/thinking room.
+
+#### Tags
+
+Git tags are awesome. They let you semantically leave markers in your repo
+about where important things happened. **Generally**, this is for version tags
+on `master`, but you can also use them to mark things like "I did the
+potentially breaking build change things starting riiiiight here." for a
+potential need for reverts or something. You can also remove them when you're
+done with them.
+
+`git tag <tag name>` to add one to your current commit. `git tag -l` to list
+tags that exist. `git tag -d <tag name>` to remove it.
+
+**Important point**: tags are NOT pushed to a remote repository. This is pretty
+awesome as a default. If you DO want to push your tags though, you can use `git
+push <remote> <tag name>` for a single tag or you can use `git push <remote>
+--tags` to send it **all** of the tags your repo has.
+
+### 2. Collaboration Tactics
+
+#### Working Cooperatively
+
+The **most** important part of working with Git with other people is to make
+sure you're all following the same practices, rules, strategies, etc. This is
+seriously the Golden Rule of collaboration.
+
+Other than that, I highly recommend you determine one person (or a specific
+team, if relevant) to perform all of the branch merges/feature conflicts for
+your project. This will help ensure the sanity of your commit tree.
+
+#### Branching
+
+There are a wide variety of expert and enterprise scale schemes for total
+repository management. They are waaay too complex for me to cover here but you
+can find a bunch through Google quite easily. What we're going to cover here is
+the basic dos and don'ts of using branches while collaborating.
+
+**DON'T**:
+  - Commit directly to a public branch.
+  - Merge/Rebase onto a public branch without checking changes upstream first.
+  - Merge gross looking history from a private branch to a public one
+    - Clean it up first (`commit --amend` or `rebase -i`)
+
+**DO:**
+  - Branch often. Every unrelated element of dev should have it's own branch
+    for its own non-merged lifetime.
+  - Only work on branches that are local to your machine.
+  - Make sure you follow the group standard for merging.
+
+It all seems obvious probably, but it's really important. If you forget one of
+these things then it goes to hell pretty damn quick.
+
+#### Rebase vs Merge
+
+So we'll look more into `git rebase` in a bit, but basically when moving a
+group of commits from one branch to another you've only got two options:
+
+- `git merge`, probably what you're familiar with
+- `git rebase`, something you've probably heard about
+
+The big difference in the long run the difference is just how it makes you
+project commit tree look in the end. If you want it to be linear then you need
+to use `git rebase` and if you want to have the branches clear with specific
+commits for merges then you'll need to use `git merge`.
+
+There's no real right or wrong way to organize your git commit history from
+that standpoint. It's more about preference and readability, so make the
+decision with your group and then go with it.
+
+More on rebasing in a bit.
+
+### 3. More (Advanced?) Commands
+
+#### Cherry-Pick
+
+Basically, it copies a specific commit (or series of commits), to a new place
+in the repo as a **new** commit (or series of commits). You can use this for
+things like getting a specific change from something experimental into a
+feature. I'm sure there's other good uses for it as well.
+
+Just remember that `git cherry-pick` creates a new commit. It's a copy of
+another commit, not a reference to that commit. If you use it poorly it can
+muddle up your history with duplicate commits.
+
+#### The Difference Between Reset and Revert
+
+You've probably used `git reset` to unstage changes in the repo and maybe even
+done something along the lines of deleting commits you decided were not useful.
+However, if you've **ever** used `git reset` to delete commits that are on a
+public branch you've done a **really bad thing**. Then you probably had to use
+`git push --force` and everyone else's history is now full of problems and it's
+all your fault.
+
+This is the point of `git revert`! It, instead of essentially deleting commits,
+produces a commit that is the inverse of the ones you listed. It produces an
+undo that you can share and won't screw up everyone else! If you have changes
+in your repo that are public that need to be undone, this is the command you
+need.
+
+`git reset` for private commits, `git revert` for public commits.
+
+#### Rebasing
+
+To many, this is a scary Git command. I'm going to try and reduce the mystery
+and tell you of some good tricks and uses for it. At the same time, for your
+first few tries with `git rebase` I recommend using it on a test repo of some
+sort, just in case.
+
+What `git rebase` does, is takes the *base* commit of the series of commits you
+specify (the first one) and puts it (and the commits after it) somewhere else
+in your repo.
+
+It is also useful in that you can edit and/or change the commits in the branch
+section you're moving as you move it.
+
+**Note:** Like `git cherry-pick` this command makes **new** commits that are
+copies of the ones specified. Unlike `git cherry-pick` it also deletes the
+original commits. **Only use this command on non-public branches**.
+
+Usually, it's smart to use `git rebase` with the `-i` flag, meaning
+"interactive". This will open the editor (that you should've changed from the
+default one) and allow you to specify the changes to make while moving the
+branch before all of the operations happen.
+
+When you use `git rebase -i` it will bring up an editor with a list of commits
+in the form of
+
+```
+pick <hash1> <message1>
+pick <hash2> <message2>
+pick <hash3> <message3>
+```
+
+These represent all commits that will be rebased in order of commit from top
+(least recent) to the bottom (most recent). There are a number of things that
+you can change to determine how these commits are rebased. All of the changes
+you make should be by changing the word "pick" to another option **OR** by
+deleting a line entirely (which means the commit and its changes will be
+discarded completely) **OR** by reordering the lines (changing what order the
+changes are committed in).
+
+The options that may go in the place of "pick" are:
+
+- `pick` -- take the commit as is.
+- `edit` -- pause at this commit so you can change the commit before it
+  happens. Useful for things like splitting a commit into more atomic commits.
+- `squash` -- merge the changes in this commit into the previous commit. Amend
+  the commit message (default to the concatenation of the messages).
+- `fixup` -- merge the changes in this commit into the previous commit. Take
+  the first commit's message as the message.
+- `reword` -- keep the commit but change the message.
+
+**If you get a conflict, error, or rebase stops part way for an edit**, don't
+worry! Fix up the conflict, make your edits, whatever, then use `git rebase
+--continue` and rebase will continue on it's merry automatic way.
+
+If you ever get into a jam and want to undo the rebase part way, `git rebase
+--abort` and it should undo the whole thing for you!
+
+Rebasing is **really** useful for cleaning up your private branch history
+before merging it into a public branch for consumption. You can make up your
+commit history to look like you're a coding genius! Doooo it. It makes the repo
+much nicer to look at in the long run. Change those commits into the commits
+you know they could've been! Just make sure you do it only if the branch is
+still **private**.
+
+### Further Reading and Practice
+
+Most of the commits in this repo are trivial and for demonstration so that you
+can explore them, move them, look at the branching, etc. It's designed to be a
+nice playground to test these things you've learned. Start looking around with
+`git log --graph --oneline --decorate --all` to find things to play with!
+
+Also, the [Further Reading](#further-reading) in the N00b section is good for
+everyone. You'll always learn something new and helpful!
+
+I hope that you've gained some helpful and fun new skills and tools, so
+practice practice practice and you'll Git gud in no time at all!
+
