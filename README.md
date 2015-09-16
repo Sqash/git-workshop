@@ -23,6 +23,8 @@ Most recently hosted live on September 16th, 2015 for members of the
 
 5. Further reading.
 
+[**Start**](#n00b-start-here)
+
 ### For intermediates
 
 1. Your new favorite commands and options
@@ -43,6 +45,8 @@ Most recently hosted live on September 16th, 2015 for members of the
     - rebase vs merge
     - picking a leader
     - Making sure everyone is doing the same thing
+
+[**Start**](#intermediate-start-here)
 
 ## N00b Start Here
 
